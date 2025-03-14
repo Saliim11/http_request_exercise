@@ -1,27 +1,27 @@
 // To parse this JSON data, do
 //
-//     final fewPokemon = fewPokemonFromJson(jsonString);
+//     final pokemon = pokemonFromJson(jsonString);
 
 import 'dart:convert';
 
-FewPokemon fewPokemonFromJson(String str) => FewPokemon.fromJson(json.decode(str));
+Pokemon pokemonFromJson(String str) => Pokemon.fromJson(json.decode(str));
 
-String fewPokemonToJson(FewPokemon data) => json.encode(data.toJson());
+String pokemonToJson(Pokemon data) => json.encode(data.toJson());
 
-class FewPokemon {
+class Pokemon {
     final int? count;
     final String? next;
     final dynamic previous;
     final List<Result>? results;
 
-    FewPokemon({
+    Pokemon({
         this.count,
         this.next,
         this.previous,
         this.results,
     });
 
-    factory FewPokemon.fromJson(Map<String, dynamic> json) => FewPokemon(
+    factory Pokemon.fromJson(Map<String, dynamic> json) => Pokemon(
         count: json["count"],
         next: json["next"],
         previous: json["previous"],
