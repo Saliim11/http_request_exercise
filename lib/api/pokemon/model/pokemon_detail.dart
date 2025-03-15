@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-PokemonDetail pokemonDetailFromJson(String str) =>
-    PokemonDetail.fromJson(json.decode(str));
+PokemonDetail pokemonDetailFromJson(String str) => PokemonDetail.fromJson(json.decode(str));
 
 class PokemonDetail {
   final String name;
@@ -10,6 +9,7 @@ class PokemonDetail {
   final List<Ability> abilities;
   final List<Type> types;
   final Stats stats;
+  final String imageUrl;
 
   PokemonDetail({
     required this.name,
@@ -18,6 +18,7 @@ class PokemonDetail {
     required this.abilities,
     required this.types,
     required this.stats,
+    required this.imageUrl,
   });
 
   factory PokemonDetail.fromJson(Map<String, dynamic> json) => PokemonDetail(
@@ -26,7 +27,8 @@ class PokemonDetail {
         weight: json["weight"],
         abilities: List<Ability>.from(json["abilities"].map((x) => Ability.fromJson(x))),
         types: List<Type>.from(json["types"].map((x) => Type.fromJson(x))),
-        stats: Stats.fromJson(json),
+        stats: Stats.fromJson(json["stats"]),
+        imageUrl: json["sprites"]["front_default"],
       );
 }
 
@@ -35,8 +37,9 @@ class Ability {
 
   Ability({required this.name});
 
-  factory Ability.fromJson(Map<String, dynamic> json) =>
-      Ability(name: json["ability"]["name"]);
+  factory Ability.fromJson(Map<String, dynamic> json) => Ability(
+        name: json["ability"]["name"],
+      );
 }
 
 class Type {
@@ -44,18 +47,34 @@ class Type {
 
   Type({required this.name});
 
-  factory Type.fromJson(Map<String, dynamic> json) =>
-      Type(name: json["type"]["name"]);
+  factory Type.fromJson(Map<String, dynamic> json) => Type(
+        name: json["type"]["name"],
+      );
 }
 
 class Stats {
   final int hp;
   final int attack;
+  final int defense;
+  final int specialAttack;
+  final int specialDefense;
+  final int speed;
 
-  Stats({required this.hp, required this.attack});
+  Stats({
+    required this.hp,
+    required this.attack,
+    required this.defense,
+    required this.specialAttack,
+    required this.specialDefense,
+    required this.speed,
+  });
 
-  factory Stats.fromJson(Map<String, dynamic> json) => Stats(
-        hp: json["stats"][0]["base_stat"],
-        attack: json["stats"][1]["base_stat"],
+  factory Stats.fromJson(List<dynamic> json) => Stats(
+        hp: json[0]["base_stat"],
+        attack: json[1]["base_stat"],
+        defense: json[2]["base_stat"],
+        specialAttack: json[3]["base_stat"],
+        specialDefense: json[4]["base_stat"],
+        speed: json[5]["base_stat"],
       );
 }

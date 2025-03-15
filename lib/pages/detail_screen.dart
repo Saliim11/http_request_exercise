@@ -5,10 +5,9 @@ import 'package:http_request_exercise/utils/type_color.dart';
 import 'package:provider/provider.dart';
 
 class PokemonDetailScreen extends StatelessWidget {
-  const PokemonDetailScreen({super.key, required this.nama, required this.index});
+  const PokemonDetailScreen({super.key, required this.nama});
 
   final String nama;
-  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class PokemonDetailScreen extends StatelessWidget {
                 SafeArea(
                   child: Column(
                     children: [
-                      _buildHeroImage(pokemon, index),
+                      _buildHeroImage(pokemon),
                       _buildPokemonInfo(context, pokemon),
                     ],
                   ),
@@ -58,7 +57,7 @@ class PokemonDetailScreen extends StatelessWidget {
   }
 
   // Menampilkan gambar Pokémon dengan animasi Hero
-  Widget _buildHeroImage(PokemonDetail pokemon, int index) {
+  Widget _buildHeroImage(PokemonDetail pokemon) {
     return Hero(
       tag: pokemon.name,
       child: Container(
@@ -68,7 +67,7 @@ class PokemonDetailScreen extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index}.png',
+              pokemon.imageUrl,
             ),
             fit: BoxFit.contain,
           ),
@@ -125,8 +124,8 @@ class PokemonDetailScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Informasi Height & Weight
-              _buildStatRow('Height', '${pokemon.height / 10} m'),
-              _buildStatRow('Weight', '${pokemon.weight / 10} kg'),
+              _buildStatHWRow('Height', '${pokemon.height / 10} m'),
+              _buildStatHWRow('Weight', '${pokemon.weight / 10} kg'),
 
               const SizedBox(height: 16),
 
@@ -136,8 +135,12 @@ class PokemonDetailScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Stat
-              _buildStatRow('HP', '${pokemon.stats.hp}'),
-              _buildStatRow('Attack', '${pokemon.stats.attack}'),
+              _buildStatRow('HP', pokemon.stats.hp, 255),
+              _buildStatRow('Attack', pokemon.stats.attack, 180),
+              _buildStatRow('Defense', pokemon.stats.defense, 230),
+              _buildStatRow('Special Attack', pokemon.stats.specialAttack, 180),
+              _buildStatRow('Special Defense', pokemon.stats.specialDefense, 230),
+              _buildStatRow('Speed', pokemon.stats.speed, 200),
             ],
           ),
         ),
@@ -146,7 +149,7 @@ class PokemonDetailScreen extends StatelessWidget {
   }
 
   // Widget untuk baris data
-  Widget _buildStatRow(String label, String value) {
+  Widget _buildStatHWRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -172,31 +175,93 @@ class PokemonDetailScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildStatRow(String label, int value, int maksStat) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black54,
+            ),
+          ),
+          Text(
+            value.toString(),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 4),
+      LinearProgressIndicator(
+        value: value / maksStat,
+        color: _getStatColor(label),
+        backgroundColor: Colors.grey.shade300,
+        minHeight: 8, // Ketebalan progress bar
+        borderRadius: BorderRadius.circular(10),
+      ),
+      const SizedBox(height: 8),
+    ],
+  );
+}
+
+Color _getStatColor(String stat) {
+  switch (stat) {
+    case 'HP':
+      return Colors.red;
+    case 'Attack':
+      return Colors.orange;
+    case 'Defense':
+      return Colors.blue;
+    case 'Special Attack':
+      return Colors.purple;
+    case 'Special Defense':
+      return Colors.green;
+    case 'Speed':
+      return Colors.yellow;
+    default:
+      return Colors.grey;
+  }
+}
+
   // Widget untuk menampilkan daftar abilities
   Widget _buildAbilitySection(List<Ability> abilities) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Abilities',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            decoration: TextDecoration.underline,
+        Align(
+          alignment: Alignment.center,
+          child: const Text(
+            'Abilities',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+            ),
           ),
         ),
         const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          children: abilities.map((ability) {
-            return Chip(
-              label: Text(
-                ability.name.toUpperCase(),
-                style: const TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.blueAccent,
-            );
-          }).toList(),
+        Align(
+          alignment: Alignment.center,
+          child: Wrap(
+            spacing: 8,
+            children: abilities.map((ability) {
+              return Chip(
+                label: Text(
+                  ability.name.toUpperCase(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Colors.blueAccent,
+              );
+            }).toList(),
+          ),
         ),
       ],
     );

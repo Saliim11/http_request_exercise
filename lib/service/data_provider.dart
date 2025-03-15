@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_request_exercise/api/pokemon/fetch_pokemon/fetch.dart';
 import 'package:http_request_exercise/api/pokemon/model/pokemon.dart';
@@ -17,7 +16,7 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
     try {
         Pokemon _dataPokemon = await fetchPokemon();
-        print("isi data pokemon ${_dataPokemon.results}");
+        // print("isi data pokemon ${_dataPokemon.results}");
         _pokemons = _dataPokemon.results ?? [];
         
     } catch (e) {
@@ -28,6 +27,8 @@ class DataProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  
 
   Future<PokemonDetail?> fetchPokemonDetail(String name) async {
     final url = 'https://pokeapi.co/api/v2/pokemon/$name';

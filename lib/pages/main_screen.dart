@@ -33,18 +33,38 @@ class _MainScreenState extends State<MainScreen> {
           ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 1,
-                ),
-                itemCount: provider.pokemons.length,
-                itemBuilder: (context, index) {
-                  final pokemon = provider.pokemons[index];
-                  return _buildPokemonCard(context, pokemon, index+1);
-                },
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: "Cari Pokemon",
+                      suffixIcon: Image.asset("assets/lock.png", height: 20, width: 20,)
+                    ),
+                    onSubmitted: (value) {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PokemonDetailScreen(nama: value),
+                      ),
+                    );
+                    },
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: provider.pokemons.length,
+                      itemBuilder: (context, index) {
+                        final pokemon = provider.pokemons[index];
+                        return _buildPokemonCard(context, pokemon, index+1);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
     );
@@ -56,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => PokemonDetailScreen(nama: pokemon.name, index: index,),
+            builder: (_) => PokemonDetailScreen(nama: pokemon.name),
           ),
         );
       },
