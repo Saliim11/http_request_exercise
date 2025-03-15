@@ -25,7 +25,12 @@ class _MainScreenState extends State<MainScreen> {
     final provider = Provider.of<DataProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pokémon List'),
+        centerTitle: true,
+        title: Image.asset(
+          "assets/pokemon.png",
+          height: 50,
+          fit: BoxFit.cover,
+        ),
         backgroundColor: Colors.red,
         elevation: 0,
       ),
@@ -35,19 +40,38 @@ class _MainScreenState extends State<MainScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: "Cari Pokemon",
-                      suffixIcon: Image.asset("assets/lock.png", height: 20, width: 20,)
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: Colors.red, width: 3), // Warna khas Pokémon
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.yellow.withOpacity(0.5), // Efek cahaya Pokémon
+                          spreadRadius: 1,
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
                     ),
-                    onSubmitted: (value) {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PokemonDetailScreen(nama: value),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Search Pokemon...",
+                        prefixIcon: Image.asset("assets/lock.png", height: 20, width: 20,),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+                        
                       ),
-                    );
-                    },
+                      onSubmitted: (value) {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PokemonDetailScreen(nama: value),
+                        ),
+                      );
+                      },
+                    ),
                   ),
                   Expanded(
                     child: GridView.builder(
@@ -70,13 +94,13 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildPokemonCard(BuildContext context, pokemon, index) {
+  Widget _buildPokemonCard(BuildContext context, Result pokemon, int index) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => PokemonDetailScreen(nama: pokemon.name),
+            builder: (_) => PokemonDetailScreen(nama: pokemon.name!),
           ),
         );
       },
@@ -91,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             // Gambar Pokémon
             Hero(
-              tag: pokemon.name,
+              tag: pokemon.name!,
               child: Image.network(
                 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index}.png',
                 height: 100,
@@ -102,7 +126,7 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 10),
             // Nama Pokémon
             Text(
-              pokemon.name.toUpperCase(),
+              pokemon.name!.toUpperCase(),
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
